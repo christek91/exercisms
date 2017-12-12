@@ -8,28 +8,26 @@ defmodule RotationalCipher do
   """
   @spec rotate(text :: String.t(), shift :: integer) :: String.t()
   def rotate(text, shift) do
-  	chars = to_charlist text
-  	to_string rotate_helper(chars, shift)
+    text
+    |> to_charlist
+    |> Enum.map(&encipher(&1, shift))
+    |> to_string
   end
 
-  def rotate_helper([c | tail], shift) do
-  	lowercase = c - ?a
-  	uppercase = c - ?A
-  	cond do
-  	  	lowercase >= 0 && lowercase <= 26 ->
-  			[rem(lowercase + shift, 26) + ?a | rotate_helper(tail, shift)]
-
-  	  	uppercase >= 0 && uppercase <= 26 ->
-  			[rem(uppercase + shift, 26) + ?A | rotate_helper(tail, shift)]
-
-  		true ->
-  			[c | rotate_helper(tail, shift)]
-  	end
-
+  # Lowercase
+  def encipher(character, shift) when character in ?a..?z do
+    rem(character - ?a + shift, 26) + ?a
   end
 
-  def rotate_helper([], shift) do
-  	[]
+  # Uppercase
+  def encipher(character, shift) when character in ?A..?Z do
+    rem(character - ?A + shift, 26) + ?A
   end
+
+  # Everything else.
+  def encipher(character, shift) do
+    character
+  end
+
 end
 
